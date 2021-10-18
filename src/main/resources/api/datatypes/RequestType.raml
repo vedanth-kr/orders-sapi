@@ -1,0 +1,31 @@
+#%RAML 1.0 DataType
+
+type: object
+properties:
+  id:
+    required: false
+    type: number
+  v_LicStateId:
+    required: true
+    description: v_LicStateId1
+    maxLength: 10    
+  v_StateLicNum:
+    type: string 
+    description: v_stateLicNum
+    minLength: 1
+    maxLength: 10
+  v_DeaNum:
+    type: number 
+    required: false
+    description: v_DeaNum
+    minimum: 1
+    maximum: 2
+  customerType:
+    enum: [low, medium, high]
+    required: false
+    description: v_MeNum
+    maxLength: 10
+    minLength: 1
+  v_pattern:
+    pattern: "\\d{3}-\\w{12}"
+    description: v_MeNum    

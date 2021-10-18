@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:file="http://www.mulesoft.org/schema/mule/file" xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd">
+	<configuration doc:name="Configuration" doc:id="d55b498d-f259-466f-a1bb-b3bdd669f782" defaultErrorHandler-ref="analyzer-demoError_Handler" />
+	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="513b6105-492a-4f19-a1bb-073c1e465f78" >
+		<salesforce:cached-basic-connection />
+	</salesforce:sfdc-config>
+	<salesforce:sfdc-config name="Salesforce_Config1" doc:name="Salesforce Config" doc:id="f5977d9c-a790-4826-81c5-e3d9f2c5bfb4" >
+		<salesforce:cached-oauth-jwt-connection />
+	</salesforce:sfdc-config>
+	<salesforce:sfdc-config name="Salesforce_Config2" doc:name="Salesforce Config" doc:id="c8c7d1ff-fe1f-4da7-8956-427b40520e34" >
+		<salesforce:config-with-oauth-connection >
+			<salesforce:oauth-authorization-code consumerKey="dgfg" consumerSecret="gdsdfg" />
+		</salesforce:config-with-oauth-connection>
+	</salesforce:sfdc-config>
+	
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="522f067a-8dcd-467c-9b28-3ea2170c4ad6" />
+	<http:request-config name="HTTP_Request_configuration1" doc:name="HTTP Request configuration" doc:id="197a5d37-7509-4c6f-97bf-d222a636561c" >
+		<http:request-connection host="localhost" port="9098" />
+	</http:request-config>
+	<flow name="getOrders" doc:id="40330eae-55b8-41bc-b049-35ca587a04b0" >
+		<scheduler doc:name="Scheduler" doc:id="0bd3ef53-a87c-46fc-aae3-ca5ffe0229d8">
+			<scheduling-strategy>
+				<fixed-frequency frequency="10001"/>
+			</scheduling-strategy>
+		</scheduler>
+		<logger level="INFO" doc:name="Logger" doc:id="a3ba69a9-3daa-4d2d-b91c-f192fe180989" message="Fetching Orders"/>
+		<db:select doc:name="Select" doc:id="6470ece7-57d5-40e6-a713-28b4c23cde1c" >
+			<db:sql >select * from orders where id = :order_id and account_number = :account_number</db:sql>
+			<db:input-parameters ><![CDATA[#[{'account_number':payload.account}]]]></db:input-parameters>
+		</db:select>
+	</flow>
+</mule>
